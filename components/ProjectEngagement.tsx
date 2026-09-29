@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import API_URL from "@/lib/api";
 
 type Engagement = {
   likes: number;
@@ -11,8 +12,6 @@ type Engagement = {
   bookmarked: boolean;
   followed: boolean;
 };
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
 
 export default function ProjectEngagement({ projectId }: { projectId: number }) {
   const router = useRouter();

@@ -12,8 +12,8 @@ import {
 
 import { useRouter } from "next/navigation";
 import AuthLayout from "@/components/AuthLayout";
+import API_URL from "@/lib/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
 const PENDING_FACE_REGISTRATION_KEY = "apexive_pending_face_registration";
 
 type PendingFaceRegistration = {

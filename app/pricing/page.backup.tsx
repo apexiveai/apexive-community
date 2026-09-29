@@ -74,21 +74,21 @@ export default function PricingPage() {
 
   }, []);
 
-function handleSubscribe(plan: {
+  function handleSubscribe(plan: {
 
-  id: number;
+    id: number;
 
-  product_key: string;
+    product_key: string;
 
-}) {
+  }) {
 
-  router.push(
+    router.push(
 
-    `/checkout?product=${encodeURIComponent(plan.product_key)}`
+      `/checkout?product=${encodeURIComponent(plan.product_key)}`
 
-  );
+    );
 
-}
+  }
 
   function hasActiveSubscription(productKey: string) {
 

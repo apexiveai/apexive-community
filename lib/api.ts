@@ -1,8 +1,10 @@
 const API_URL =
 
-  process.env.NEXT_PUBLIC_API_URL ??
+  process.env.NEXT_PUBLIC_API_URL;
 
-  "http://127.0.0.1:8000";
+if (!API_URL) {
+  throw new Error("NEXT_PUBLIC_API_URL is not defined in the environment variables");
+}
 
 export type Category = {
 
@@ -699,3 +701,5 @@ export async function createResource(
   });
 
 }
+
+export default API_URL;

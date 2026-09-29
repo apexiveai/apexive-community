@@ -4,12 +4,8 @@ import Link from "next/link";
 
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import API_URL from "@/lib/api";
 
-const API =
-
-  process.env.NEXT_PUBLIC_API_URL ||
-
-  "http://127.0.0.1:8000";
 
 type Thread = {
 
@@ -94,7 +90,7 @@ export default function ThreadPage({
     async function load() {
       try {
         const threadResponse = await fetch(
-          `${API}/api/threads/by-slug/${encodeURIComponent(categorySlug)}/${encodeURIComponent(threadSlug)}`,
+          `${API_URL}/api/threads/by-slug/${encodeURIComponent(categorySlug)}/${encodeURIComponent(threadSlug)}`,
         );
         if (!threadResponse.ok) {
           throw new Error("Thread not found.");
@@ -105,7 +101,7 @@ export default function ThreadPage({
         setThread(threadData);
 
         const replyResponse = await fetch(
-          `${API}/api/replies/thread/${threadData.id}`,
+          `${API_URL}/api/replies/thread/${threadData.id}`,
         );
         if (replyResponse.ok) {
           const replyData: Reply[] = await replyResponse.json();
@@ -168,7 +164,7 @@ export default function ThreadPage({
 
         await fetch(
 
-          `${API}/api/replies`,
+          `${API_URL}/api/replies`,
 
           {
 

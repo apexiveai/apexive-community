@@ -5,12 +5,7 @@ import Link from "next/link";
 import { use, useEffect, useState } from "react";
 
 import { useRouter } from "next/navigation";
-
-const API =
-
-  process.env.NEXT_PUBLIC_API_URL ||
-
-  "http://127.0.0.1:8000";
+import API_URL from "@/lib/api";
 
 type Category = {
 
@@ -86,7 +81,7 @@ export default function NewThreadPage({
 
     fetch(
 
-      `${API}/api/categories/${encodeURIComponent(categorySlug)}`
+      `${API_URL}/api/categories/${encodeURIComponent(categorySlug)}`
 
     )
 
@@ -148,7 +143,7 @@ export default function NewThreadPage({
 
       const response = await fetch(
 
-        `${API}/api/threads`,
+        `${API_URL}/api/threads`,
 
         {
 

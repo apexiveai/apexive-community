@@ -6,6 +6,22 @@ import Link from "next/link";
 
 import {
 
+  ArrowRight,
+
+  CalendarDays,
+
+  CheckCircle2,
+
+  CreditCard,
+
+  Loader2,
+
+  XCircle,
+
+} from "lucide-react";
+
+import {
+
   cancelSubscription,
 
   getMySubscriptions,
@@ -14,25 +30,89 @@ import {
 
 } from "@/lib/subscriptions";
 
+const productNames: Record<string, string> = {
+
+  trademark: "Trademark Intelligence",
+
+  network: "Network Design & Quotation",
+
+  workforce: "Autonomous Workforce",
+
+  trademark_workforce: "Trademark + Workforce",
+
+  telecom: "Telecom Network",
+
+};
+
+function formatDate(value: string | null) {
+
+  if (!value) {
+
+    return "—";
+
+  }
+
+  return new Date(value).toLocaleDateString("en-US", {
+
+    year: "numeric",
+
+    month: "short",
+
+    day: "numeric",
+
+  });
+
+}
+
+function getStatusClass(status: string) {
+
+  switch (status) {
+
+    case "active":
+
+    case "trialing":
+
+      return "bg-emerald-50 text-emerald-700 border-emerald-200";
+
+    case "cancelled":
+
+    case "canceled":
+
+      return "bg-amber-50 text-amber-700 border-amber-200";
+
+    case "expired":
+
+      return "bg-red-50 text-red-700 border-red-200";
+
+    default:
+
+      return "bg-slate-50 text-slate-600 border-slate-200";
+
+  }
+
+}
+
 export default function SubscriptionsPage() {
 
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
 
   const [loading, setLoading] = useState(true);
 
-  const [cancelling, setCancelling] = useState<number | null>(null);
-
   const [error, setError] = useState("");
+
+  const [cancellingId, setCancellingId] = useState<number | null>(null);
 
   async function loadSubscriptions() {
 
     try {
 
+      setLoading(true);
+
       setError("");
 
-      const data = await getMySubscriptions();
+      const result = await getMySubscriptions();
 
-      setSubscriptions(data);
+      setSubscriptions(result);
 
     } catch (err) {
 
@@ -42,7 +122,7 @@ export default function SubscriptionsPage() {
 
           ? err.message
 
-          : "Unable to load subscriptions.",
+          : "Unable to load your subscriptions.",
 
       );
 
@@ -74,11 +154,9 @@ export default function SubscriptionsPage() {
 
     }
 
-    setCancelling(subscriptionId);
-
-    setError("");
-
     try {
+
+      setCancellingId(subscriptionId);
 
       await cancelSubscription(subscriptionId);
 
@@ -86,7 +164,7 @@ export default function SubscriptionsPage() {
 
     } catch (err) {
 
-      setError(
+      window.alert(
 
         err instanceof Error
 
@@ -98,59 +176,21 @@ export default function SubscriptionsPage() {
 
     } finally {
 
-      setCancelling(null);
+      setCancellingId(null);
 
     }
 
   }
 
-  function formatDate(value: string | null) {
+  const activeSubscriptions = subscriptions.filter(
 
-    if (!value) {
+    (subscription) =>
 
-      return "—";
+      subscription.status === "active" ||
 
-    }
+      subscription.status === "trialing",
 
-    return new Date(value).toLocaleDateString("en-US", {
-
-      year: "numeric",
-
-      month: "short",
-
-      day: "numeric",
-
-    });
-
-  }
-
-  if (loading) {
-
-    return (
-
-      <main className="min-h-screen bg-slate-50">
-
-        <div className="mx-auto flex min-h-[70vh] max-w-5xl items-center justify-center px-6">
-
-          <div className="text-center">
-
-            <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-blue-600" />
-
-            <p className="text-sm text-slate-500">
-
-              Loading your subscriptions...
-
-            </p>
-
-          </div>
-
-        </div>
-
-      </main>
-
-    );
-
-  }
+  );
 
   return (
 
@@ -158,42 +198,57 @@ export default function SubscriptionsPage() {
 
       <section className="border-b border-slate-200 bg-white">
 
-        <div className="mx-auto max-w-5xl px-6 py-12">
+        <div className="mx-auto max-w-6xl px-6 py-14">
 
-          <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+          <div className="max-w-3xl">
 
-            <div>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">
 
-              <div className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
+              Apexive Community
 
-                APEXIVE AI
+            </p>
 
-              </div>
+            <h1 className="mt-3 text-4xl font-bold tracking-tight text-slate-950">
 
-              <h1 className="mt-2 text-4xl font-bold tracking-tight text-[#172033]">
+              My Subscriptions
 
-                My Subscriptions
+            </h1>
 
-              </h1>
+            <p className="mt-4 text-sm leading-7 text-slate-500">
 
-              <p className="mt-3 text-slate-500">
+              Manage your active Apexive Community products,
 
-                Manage the Apexive AI products connected to your workspace.
+              subscription periods, and billing status.
 
-              </p>
+            </p>
 
-            </div>
+          </div>
+
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
 
             <Link
 
               href="/pricing"
 
-              className="inline-flex items-center justify-center rounded-xl bg-[#172033] px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
 
             >
 
-              Browse Products
+              View Plans
 
+              <ArrowRight className="h-4 w-4" />
+
+            </Link>
+
+            <Link
+
+              href="/"
+
+              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+
+            >
+
+              Back to Community
             </Link>
 
           </div>
@@ -202,160 +257,310 @@ export default function SubscriptionsPage() {
 
       </section>
 
-      <section className="mx-auto max-w-5xl px-6 py-10">
+      <section className="mx-auto max-w-6xl px-6 py-10">
 
-        {error && (
+        {loading && (
 
-          <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-medium text-red-700">
+          <div className="flex min-h-[45vh] items-center justify-center">
 
-            {error}
+            <div className="text-center">
+
+              <Loader2 className="mx-auto h-8 w-8 animate-spin text-blue-600" />
+
+              <p className="mt-4 text-sm text-slate-500">
+
+                Loading your subscriptions...
+
+              </p>
+
+            </div>
 
           </div>
 
         )}
 
-        {subscriptions.length === 0 ? (
+        {!loading && error && (
 
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
+          <div className="rounded-3xl border border-red-200 bg-white p-8 text-center shadow-sm">
 
-            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-2xl">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50">
 
-              $
+              <XCircle className="h-7 w-7 text-red-600" />
 
             </div>
 
-            <h2 className="text-xl font-bold text-[#172033]">
+            <h2 className="mt-5 text-xl font-bold text-slate-950">
 
-              No active subscriptions
+              Unable to load subscriptions
 
             </h2>
 
-            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
-              Choose an Apexive AI product to start using your enterprise
+            <p className="mt-3 text-sm text-red-600">
 
-              workspace.
+              {error}
 
             </p>
 
-            <Link
+            <button
 
-              href="/pricing"
+              type="button"
 
-              className="mt-6 inline-flex rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
+              onClick={loadSubscriptions}
+
+              className="mt-6 rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white"
 
             >
 
-              View Pricing
+              Try Again
 
-            </Link>
+            </button>
 
           </div>
 
-        ) : (
+        )}
 
-          <div className="space-y-5">
+        {!loading && !error && (
 
-            {subscriptions.map((subscription) => {
+          <>
 
-              const active = ["active", "trialing"].includes(
+            <div className="grid gap-4 sm:grid-cols-3">
 
-                subscription.status,
+              <div className="rounded-2xl border border-slate-200 bg-white p-5">
 
-              );
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
 
-              return (
+                  Total
 
-                <article
+                </p>
 
-                  key={subscription.id}
+                <p className="mt-2 text-3xl font-bold text-slate-950">
 
-                  className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                  {subscriptions.length}
+
+                </p>
+
+              </div>
+
+              <div className="rounded-2xl border border-emerald-200 bg-white p-5">
+
+                <p className="text-xs font-semibold uppercase tracking-wider text-emerald-600">
+
+                  Active
+
+                </p>
+
+                <p className="mt-2 text-3xl font-bold text-slate-950">
+
+                  {activeSubscriptions.length}
+
+                </p>
+
+              </div>
+
+              <div className="rounded-2xl border border-blue-200 bg-white p-5">
+
+                <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
+
+                  Available Products
+
+                </p>
+
+                <p className="mt-2 text-3xl font-bold text-slate-950">
+
+                  5
+
+                </p>
+
+              </div>
+
+            </div>
+
+            {subscriptions.length === 0 ? (
+
+              <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
+
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50">
+
+                  <CreditCard className="h-8 w-8 text-blue-600" />
+
+                </div>
+
+                <h2 className="mt-6 text-2xl font-bold text-slate-950">
+
+                  No subscriptions yet
+
+                </h2>
+
+                <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-slate-500">
+
+                  Choose an Apexive Community product to start
+
+                  using the platform.
+
+                </p>
+
+                <Link
+
+                  href="/pricing"
+
+                  className="mt-7 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-blue-700"
 
                 >
 
-                  <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                  Explore Plans
 
-                    <div className="flex-1">
+                  <ArrowRight className="h-4 w-4" />
 
-                      <div className="flex flex-wrap items-center gap-3">
+                </Link>
 
-                        <h2 className="text-xl font-bold text-[#172033]">
+              </div>
 
-                          {subscription.plan.name}
+            ) : (
 
-                        </h2>
+              <div className="mt-8 space-y-5">
 
-                        <span
+                {subscriptions.map((subscription) => {
 
-                          className={`rounded-full px-3 py-1 text-xs font-bold uppercase ${
+                  const productKey =
 
-                            active
+                    subscription.plan.product_key;
 
-                              ? "bg-emerald-50 text-emerald-700"
+                  const productName =
 
-                              : "bg-slate-100 text-slate-600"
+                    productNames[productKey] ??
 
-                          }`}
+                    subscription.plan.name;
 
-                        >
+                  const active =
+                    subscription.status === "active" ||
 
-                          {subscription.status}
+                    subscription.status === "trialing";
 
-                        </span>
+                  return (
+
+                    <div
+
+                      key={subscription.id}
+
+                      className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
+
+                    >
+
+                      <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+
+                        <div>
+
+                          <div className="flex flex-wrap items-center gap-3">
+
+                            <h2 className="text-xl font-bold text-slate-950">
+
+                              {productName}
+
+                            </h2>
+
+                            <span
+
+                              className={`rounded-full border px-3 py-1 text-xs font-bold uppercase ${getStatusClass(
+
+                                subscription.status,
+
+                              )}`}
+
+                            >
+
+                              {subscription.status}
+
+                            </span>
+
+                          </div>
+
+                          <p className="mt-2 text-sm text-slate-500">
+
+                            {subscription.plan.name}
+
+                          </p>
+
+                        </div>
+
+                        <div className="flex items-center gap-2 rounded-2xl bg-slate-50 px-4 py-3">
+
+                          {active ? (
+
+                            <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+
+                          ) : (
+
+                            <XCircle className="h-5 w-5 text-slate-400" />
+
+                          )}
+
+                          <span className="text-sm font-semibold text-slate-700">
+
+                            {active
+
+                              ? "Access Enabled"
+
+                              : "Access Inactive"}
+
+                          </span>
+
+                        </div>
 
                       </div>
 
-                      <p className="mt-2 text-sm text-slate-500">
-
-                        {subscription.plan.description}
-
-                      </p>
-
-                      <div className="mt-5 grid gap-4 text-sm sm:grid-cols-3">
+                      <div className="mt-7 grid gap-4 border-t border-slate-100 pt-6 sm:grid-cols-2 lg:grid-cols-4">
 
                         <div>
 
-                          <div className="text-xs uppercase tracking-wide text-slate-400">
+                          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
 
                             Price
 
-                          </div>
+                          </p>
 
-                          <div className="mt-1 font-bold text-[#172033]">
+                          <p className="mt-2 text-sm font-bold text-slate-900">
 
-                            ${Number(subscription.price).toLocaleString()} /{" "}
+                            {subscription.currency}{" "}
 
-                            {subscription.billing_cycle}
+                            {Number(subscription.price).toFixed(2)}
 
-                          </div>
+                            <span className="ml-1 font-normal text-slate-400">
+
+                              /{subscription.billing_cycle}
+
+                            </span>
+
+                          </p>
 
                         </div>
 
                         <div>
 
-                          <div className="text-xs uppercase tracking-wide text-slate-400">
+                          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
 
                             Started
 
-                          </div>
+                          </p>
 
-                          <div className="mt-1 font-semibold text-slate-700">
+                          <p className="mt-2 flex items-center gap-2 text-sm font-semibold text-slate-700">
+
+                            <CalendarDays className="h-4 w-4 text-slate-400" />
 
                             {formatDate(subscription.start_date)}
 
-                          </div>
+                          </p>
 
                         </div>
 
                         <div>
 
-                          <div className="text-xs uppercase tracking-wide text-slate-400">
+                          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
 
-                            Renews
+                            Current Period End
 
-                          </div>
+                          </p>
 
-                          <div className="mt-1 font-semibold text-slate-700">
+                          <p className="mt-2 text-sm font-semibold text-slate-700">
 
                             {formatDate(
 
@@ -363,66 +568,74 @@ export default function SubscriptionsPage() {
 
                             )}
 
-                          </div>
+                          </p>
+
+                        </div>
+
+                        <div>
+
+                          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+
+                            Subscription ID
+
+                          </p>
+
+                          <p className="mt-2 text-sm font-semibold text-slate-700">
+                            #{subscription.id}
+
+                          </p>
 
                         </div>
 
                       </div>
 
-                    </div>
-
-                    <div className="flex flex-col gap-2 md:w-52">
-
-                      <Link
-
-                        href={`/${subscription.plan.product_key}`}
-
-                        className="flex items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
-
-                      >
-
-                        Open Product
-
-                      </Link>
-
                       {active && (
 
-                        <button
+                        <div className="mt-6 flex justify-end">
 
-                          type="button"
+                          <button
 
-                          disabled={cancelling === subscription.id}
+                            type="button"
 
-                          onClick={() =>
+                            disabled={
 
-                            handleCancel(subscription.id)
+                              cancellingId === subscription.id
 
-                          }
-                          className="rounded-xl border border-red-200 px-4 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                            }
 
-                        >
+                            onClick={() =>
 
-                          {cancelling === subscription.id
+                              handleCancel(subscription.id)
 
-                            ? "Cancelling..."
+                            }
 
-                            : "Cancel Subscription"}
+                            className="rounded-xl border border-red-200 bg-white px-4 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
 
-                        </button>
+                          >
+
+                            {cancellingId === subscription.id
+
+                              ? "Cancelling..."
+
+                              : "Cancel Subscription"}
+
+                          </button>
+
+                        </div>
 
                       )}
 
                     </div>
 
-                  </div>
+                  );
 
-                </article>
+                })}
 
-              );
+              </div>
 
-            })}
+            )}
 
-          </div>
+          </>
 
         )}
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import SiteHeader from "@/components/SiteHeader";
+import API_URL from "@/lib/api";
 
 type SearchResult = {
   id: number;
@@ -13,8 +14,6 @@ type SearchResult = {
   technologies: string[];
   semantic_score: number;
 };
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
