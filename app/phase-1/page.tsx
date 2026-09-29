@@ -94,7 +94,7 @@ export default function PhaseOnePage() {
           </div>
 <Link
 
-  href="http://localhost:5173"
+  href="https://www.apexiveai.com/telecom-power-monitoring"
 
   className="group block w-full rounded-2xl border border-slate-200 bg-white p-7 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl"
 

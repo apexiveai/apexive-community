@@ -21,12 +21,7 @@ import {
 
 } from "lucide-react";
 import RequireSubscription from "@/components/RequireSubscription";
-
-const TRADEMARK_DETECTOR_URL =
-
-  process.env.NEXT_PUBLIC_TRADEMARK_DETECTOR_URL ??
-
-  "http://localhost:5173";
+import API_URL from "@/lib/api";
 
 const features = [
 
@@ -124,7 +119,7 @@ export default function TrademarkIntelligencePage() {
 
   function launchDetector() {
 
-    window.location.href = TRADEMARK_DETECTOR_URL;
+    window.location.href = API_URL!;
 
   }
 
