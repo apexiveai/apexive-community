@@ -3,12 +3,7 @@
 import Link from "next/link";
 
 import { use, useEffect, useState } from "react";
-
-const API =
-
-  process.env.NEXT_PUBLIC_API_URL ||
-
-  "http://127.0.0.1:8000";
+import API_URL from "@/lib/api";
 
 type Category = {
 
@@ -87,7 +82,7 @@ export default function CategoryPage({
 
         const categoryResponse = await fetch(
 
-          `${API}/api/categories/${encodeURIComponent(categorySlug)}`
+          `${API_URL}/api/categories/${encodeURIComponent(categorySlug)}`
 
         );
 
@@ -104,7 +99,7 @@ export default function CategoryPage({
         setCategory(categoryData);
 
         const threadResponse = await fetch(
-          `${API}/api/threads?category_id=${categoryData.id}`
+          `${API_URL}/api/threads?category_id=${categoryData.id}`
 
         );
 

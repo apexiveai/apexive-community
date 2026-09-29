@@ -4,11 +4,7 @@ import SiteHeader from "@/components/SiteHeader";
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import RequireSubscription from "@/components/RequireSubscription";
-
-const API =
-  process.env.NEXT_PUBLIC_WORKFORCE_API_URL ?? "http://127.0.0.1:8003";
-const WORKFORCE_APP_URL =
-  process.env.NEXT_PUBLIC_WORKFORCE_APP_URL ?? "http://localhost:3001";
+import API_URL from "@/lib/api";
 
 const lifecycle = [
   ["POST /executions", "202 Accepted"],
@@ -38,7 +34,7 @@ export default function WorkforcePage() {
   useEffect(() => {
     const token = localStorage.getItem("apexive_token");
     if (!token) return;
-    fetch(`${API}/executions`, {
+    fetch(`${API_URL}/executions`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => (response.ok ? response.json() : []))
@@ -54,7 +50,7 @@ export default function WorkforcePage() {
       return;
     }
     setMessage("");
-    const response = await fetch(`${API}/executions`, {
+    const response = await fetch(`${API_URL}/executions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -132,7 +128,7 @@ export default function WorkforcePage() {
 
           <div className="mt-10 flex justify-center">
             <a
-              href={WORKFORCE_APP_URL}
+              href={API_URL}
               className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-6 py-4 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400"
             >
               Open Autonomous Enterprise Workforce

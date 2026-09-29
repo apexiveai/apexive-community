@@ -3,12 +3,7 @@
 import Link from "next/link";
 
 import { useEffect, useState } from "react";
-
-const API =
-
-  process.env.NEXT_PUBLIC_API_URL ||
-
-  "http://127.0.0.1:8000";
+import API_URL from "@/lib/api";
 
 type Category = {
 
@@ -42,7 +37,7 @@ export default function ForumsPage() {
 
   useEffect(() => {
 
-    fetch(`${API}/api/categories`)
+    fetch(`${API_URL}/api/categories`)
 
       .then((res) => {
 
